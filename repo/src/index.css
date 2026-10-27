@@ -1,0 +1,1198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================
+   1. TOKENS - Улучшенная цветовая система
+   ============================================================= */
+:root {
+  /* Поверхности: глубокий сине-графитовый градиент вместо плоского чёрного */
+  --ic-canvas: 10 13 20;
+  --ic-surface: 15 19 28;
+  --ic-raised: 22 27 38;
+  --ic-sunken: 7 9 14;
+  --ic-overlay: 27 33 45;
+  --ic-line: 33 40 54;
+  --ic-line-strong: 51 60 78;
+  /* Текст: выше контраст, меньше серого */
+  --ic-ink: 236 241 249;
+  --ic-ink-soft: 163 174 192;
+  --ic-ink-mute: 118 129 148;
+  /* Акцент — синий экосистемы, второй — фиолетовый */
+  --ic-accent: 86 145 255;
+  --ic-accent-soft: 32 45 82;
+  --ic-accent-ink: 255 255 255;
+  --ic-violet: 167 130 255;
+  --ic-ok: 74 222 145;
+  --ic-warn: 250 178 60;
+  --ic-danger: 255 100 116;
+  --ic-info: 96 205 240;
+  --ic-hi: 255 255 255;
+  --ic-shadow-soft: 0 1px 2px rgb(0 0 0 / 0.45), 0 10px 28px -14px rgb(0 0 0 / 0.75);
+  --ic-shadow-pop: 0 28px 70px -22px rgb(0 0 0 / 0.85), 0 2px 10px rgb(0 0 0 / 0.5);
+  --ic-shadow-glow: 0 0 20px rgb(var(--ic-accent) / 0.3);
+  --ic-grad: linear-gradient(135deg, #4c8dff 0%, #6f7dff 45%, #a780ff 100%);
+  --ic-grad-soft: linear-gradient(135deg, rgb(76 141 255 / 0.16) 0%, rgb(167 128 255 / 0.12) 100%);
+  --ic-grad-subtle: linear-gradient(135deg, rgb(76 141 255 / 0.08) 0%, rgb(167 128 255 / 0.06) 100%);
+  --ic-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ic-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ic-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ic-t-fast: 130ms;
+  --ic-t: 200ms;
+  --ic-t-slow: 380ms;
+  --ic-t-slower: 600ms;
+  --ic-r: 14px;
+  --ic-r-sm: 9px;
+  --ic-r-lg: 18px;
+}
+
+:root[data-theme="light"] {
+  --ic-canvas: 236 239 245;
+  --ic-surface: 252 252 254;
+  --ic-raised: 244 246 250;
+  --ic-sunken: 230 233 240;
+  --ic-overlay: 255 255 255;
+  --ic-line: 220 224 233;
+  --ic-line-strong: 198 204 216;
+  --ic-ink: 20 24 34;
+  --ic-ink-soft: 78 88 105;
+  --ic-ink-mute: 122 132 150;
+  --ic-accent: 58 110 235;
+  --ic-accent-soft: 224 231 253;
+  --ic-accent-ink: 255 255 255;
+  --ic-violet: 132 86 236;
+  --ic-ok: 20 158 92;
+  --ic-warn: 186 116 8;
+  --ic-danger: 214 58 74;
+  --ic-info: 12 138 183;
+  --ic-shadow-soft: 0 1px 2px rgb(16 24 40 / 0.06), 0 10px 28px -16px rgb(16 24 40 / 0.22);
+  --ic-shadow-pop: 0 28px 64px -26px rgb(16 24 40 / 0.32), 0 2px 8px rgb(16 24 40 / 0.07);
+  --ic-shadow-glow: 0 0 20px rgb(var(--ic-accent) / 0.15);
+  --ic-grad: linear-gradient(135deg, #4c8dff 0%, #6f7dff 45%, #a780ff 100%);
+  --ic-grad-soft: linear-gradient(135deg, rgb(76 141 255 / 0.1) 0%, rgb(167 128 255 / 0.08) 100%);
+  --ic-grad-subtle: linear-gradient(135deg, rgb(76 141 255 / 0.05) 0%, rgb(167 128 255 / 0.04) 100%);
+}
+
+/* =============================================================
+   2. BASE - Улучшенные базовые стили
+   ============================================================= */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  * {
+    border-color: rgb(var(--ic-line));
+    min-width: 0;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  body {
+    background: rgb(var(--ic-canvas));
+    color: rgb(var(--ic-ink));
+    font-family: theme("fontFamily.sans");
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Ambient light: two very soft radial washes behind everything. */
+  #root::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(1100px 640px at 8% -12%, rgb(var(--ic-accent) / 0.14), transparent 60%),
+      radial-gradient(900px 560px at 98% 112%, rgb(var(--ic-violet) / 0.12), transparent 58%),
+      radial-gradient(600px 400px at 50% 120%, rgb(var(--ic-accent) / 0.05), transparent 70%);
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  ::selection {
+    background: rgb(var(--ic-accent) / 0.32);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--ic-accent) / 0.85);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Улучшенные скроллбары */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--ic-line-strong) / 0.6);
+    border-radius: 99px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background var(--ic-t);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--ic-ink-mute) / 0.8);
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  textarea {
+    field-sizing: content;
+  }
+}
+
+/* =============================================================
+   3. MOTION LIBRARY - Расширенная библиотека анимаций
+   ============================================================= */
+@keyframes ic-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ic-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ic-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ic-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ic-slide-left {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ic-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ic-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+@keyframes ic-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(var(--ic-accent) / 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgb(var(--ic-accent) / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(var(--ic-accent) / 0);
+  }
+}
+@keyframes ic-shimmer {
+  from {
+    background-position: -180% 0;
+  }
+  to {
+    background-position: 180% 0;
+  }
+}
+@keyframes ic-dots {
+  0% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+}
+@keyframes ic-gradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes ic-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes ic-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+@keyframes ic-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes ic-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes ic-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ic-bar {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(-320%);
+  }
+}
+@keyframes ic-ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+@keyframes ic-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgb(var(--ic-accent) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgb(var(--ic-accent) / 0.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =============================================================
+   4. PRIMITIVES - Улучшенные базовые компоненты
+   ============================================================= */
+@layer components {
+  /* --- surfaces --- */
+  .ic-panel {
+    background: rgb(var(--ic-surface));
+    border: 1px solid rgb(var(--ic-line));
+    border-radius: var(--ic-r, 12px);
+    transition: border-color var(--ic-t), box-shadow var(--ic-t);
+  }
+  .ic-panel:hover {
+    border-color: rgb(var(--ic-line-strong));
+  }
+  .ic-inset {
+    background: rgb(var(--ic-sunken));
+    border: 1px solid rgb(var(--ic-line));
+  }
+
+  .ic-hairline {
+    border-bottom: 1px solid rgb(var(--ic-line));
+  }
+
+  /* --- buttons - Улучшенные с ripple эффектом --- */
+  .ic-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 11px;
+    border-radius: var(--ic-r-sm);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgb(var(--ic-ink-soft));
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    transition:
+      background var(--ic-t) var(--ic-ease-out),
+      color var(--ic-t) var(--ic-ease-out),
+      border-color var(--ic-t) var(--ic-ease-out),
+      transform var(--ic-t-fast) var(--ic-ease-spring),
+      box-shadow var(--ic-t) var(--ic-ease-out);
+    will-change: transform;
+  }
+  .ic-btn:hover:not(:disabled) {
+    background: rgb(var(--ic-raised));
+    color: rgb(var(--ic-ink));
+  }
+  .ic-btn:active:not(:disabled) {
+    transform: scale(0.965);
+  }
+  .ic-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Ripple эффект */
+  .ic-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgb(255 255 255 / 0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--ic-t);
+    pointer-events: none;
+  }
+  .ic-btn:active::after {
+    opacity: 1;
+    transition: none;
+  }
+
+  .ic-btn--ghost {
+    color: rgb(var(--ic-ink-mute));
+  }
+  .ic-btn--ghost:hover:not(:disabled) {
+    color: rgb(var(--ic-ink));
+  }
+
+  .ic-btn--outline {
+    border-color: rgb(var(--ic-line));
+    background: rgb(var(--ic-raised));
+  }
+  .ic-btn--outline:hover:not(:disabled) {
+    border-color: rgb(var(--ic-line-strong));
+    box-shadow: var(--ic-shadow-soft);
+  }
+
+  .ic-btn--primary {
+    background: var(--ic-grad);
+    color: #fff;
+    font-weight: 600;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.14) inset,
+      0 6px 18px -8px rgb(var(--ic-accent) / 0.9);
+  }
+  .ic-btn--primary:hover:not(:disabled) {
+    filter: brightness(1.08);
+    color: #fff;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.14) inset,
+      0 8px 24px -8px rgb(var(--ic-accent) / 0.95);
+  }
+
+  .ic-btn--danger {
+    background: rgb(var(--ic-danger) / 0.14);
+    color: rgb(var(--ic-danger));
+    border-color: rgb(var(--ic-danger) / 0.3);
+  }
+  .ic-btn--danger:hover:not(:disabled) {
+    background: rgb(var(--ic-danger) / 0.22);
+    color: rgb(var(--ic-danger));
+  }
+
+  .ic-btn--icon {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+  }
+  .ic-btn--sm {
+    height: 25px;
+    padding: 0 8px;
+    font-size: 11.5px;
+    border-radius: 7px;
+  }
+  .ic-btn--sm.ic-btn--icon {
+    width: 25px;
+    height: 25px;
+  }
+
+  .ic-btn.is-active {
+    background: rgb(var(--ic-accent) / 0.16);
+    color: rgb(var(--ic-accent));
+    border-color: rgb(var(--ic-accent) / 0.32);
+  }
+
+  /* --- inputs - Улучшенные с плавными переходами --- */
+  .ic-input {
+    height: 30px;
+    width: 100%;
+    padding: 0 10px;
+    border-radius: var(--ic-r-sm);
+    background: rgb(var(--ic-sunken));
+    border: 1px solid rgb(var(--ic-line));
+    color: rgb(var(--ic-ink));
+    font-size: 12.5px;
+    outline: none;
+    transition:
+      border-color var(--ic-t) var(--ic-ease-out),
+      box-shadow var(--ic-t) var(--ic-ease-out),
+      background var(--ic-t) var(--ic-ease-out);
+  }
+  .ic-input::placeholder {
+    color: rgb(var(--ic-ink-mute));
+  }
+  .ic-input:hover:not(:disabled):not(:focus) {
+    border-color: rgb(var(--ic-line-strong));
+  }
+  .ic-input:focus {
+    border-color: rgb(var(--ic-accent) / 0.7);
+    box-shadow: 0 0 0 3px rgb(var(--ic-accent) / 0.14);
+    background: rgb(var(--ic-surface));
+  }
+  .ic-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  textarea.ic-input {
+    height: auto;
+    padding: 8px 10px;
+    line-height: 1.5;
+    resize: none;
+  }
+
+  select.ic-input {
+    appearance: none;
+    padding-right: 26px;
+    background-image: linear-gradient(45deg, transparent 50%, rgb(var(--ic-ink-mute)) 50%),
+      linear-gradient(135deg, rgb(var(--ic-ink-mute)) 50%, transparent 50%);
+    background-position:
+      calc(100% - 14px) calc(50% + 1px),
+      calc(100% - 9px) calc(50% + 1px);
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+  select.ic-input option {
+    background: rgb(var(--ic-overlay));
+    color: rgb(var(--ic-ink));
+  }
+
+  /* --- switch - Улучшенный с анимацией --- */
+  .ic-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 34px;
+    height: 19px;
+    flex: none;
+    border-radius: 99px;
+    background: rgb(var(--ic-line-strong));
+    border: 1px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition:
+      background var(--ic-t) var(--ic-ease-out),
+      box-shadow var(--ic-t) var(--ic-ease-out);
+  }
+  .ic-switch::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    width: 15px;
+    height: 15px;
+    border-radius: 99px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+    transition: transform var(--ic-t) var(--ic-ease-spring);
+  }
+  .ic-switch[data-on="true"] {
+    background: var(--ic-grad);
+    box-shadow: 0 0 0 3px rgb(var(--ic-accent) / 0.15);
+  }
+  .ic-switch[data-on="true"]::after {
+    transform: translateX(15px);
+  }
+
+  /* --- segmented control - Улучшенный --- */
+  .ic-seg {
+    display: inline-flex;
+    padding: 2px;
+    gap: 2px;
+    border-radius: 10px;
+    background: rgb(var(--ic-sunken));
+    border: 1px solid rgb(var(--ic-line));
+  }
+  .ic-seg > button {
+    border: 0;
+    background: transparent;
+    color: rgb(var(--ic-ink-mute));
+    padding: 0 11px;
+    height: 24px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition:
+      color var(--ic-t) var(--ic-ease-out),
+      background var(--ic-t) var(--ic-ease-out),
+      box-shadow var(--ic-t) var(--ic-ease-out);
+  }
+  .ic-seg > button:hover:not([data-on="true"]) {
+    color: rgb(var(--ic-ink));
+  }
+  .ic-seg > button[data-on="true"] {
+    background: rgb(var(--ic-raised));
+    color: rgb(var(--ic-ink));
+    box-shadow: var(--ic-shadow-soft), inset 0 1px 0 rgb(255 255 255 / 0.06);
+  }
+
+  /* --- badges / chips - Улучшенные --- */
+  .ic-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 99px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: rgb(var(--ic-raised));
+    border: 1px solid rgb(var(--ic-line));
+    color: rgb(var(--ic-ink-mute));
+    white-space: nowrap;
+    transition: all var(--ic-t);
+  }
+  .ic-badge:hover {
+    border-color: rgb(var(--ic-line-strong));
+  }
+  .ic-badge--accent {
+    background: rgb(var(--ic-accent) / 0.14);
+    border-color: rgb(var(--ic-accent) / 0.3);
+    color: rgb(var(--ic-accent));
+  }
+  .ic-badge--ok {
+    background: rgb(var(--ic-ok) / 0.13);
+    border-color: rgb(var(--ic-ok) / 0.3);
+    color: rgb(var(--ic-ok));
+  }
+  .ic-badge--warn {
+    background: rgb(var(--ic-warn) / 0.13);
+    border-color: rgb(var(--ic-warn) / 0.3);
+    color: rgb(var(--ic-warn));
+  }
+  .ic-badge--danger {
+    background: rgb(var(--ic-danger) / 0.13);
+    border-color: rgb(var(--ic-danger) / 0.3);
+    color: rgb(var(--ic-danger));
+  }
+
+  /* --- tooltip - Улучшенный с плавным появлением --- */
+  .ic-tip {
+    position: relative;
+  }
+  .ic-tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 7px);
+    transform: translateX(-50%) translateY(-3px);
+    padding: 4px 8px;
+    border-radius: 7px;
+    background: rgb(var(--ic-overlay));
+    border: 1px solid rgb(var(--ic-line-strong));
+    color: rgb(var(--ic-ink));
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 90;
+    box-shadow: var(--ic-shadow-pop);
+    transition:
+      opacity var(--ic-t) var(--ic-ease-out),
+      transform var(--ic-t) var(--ic-ease-out);
+  }
+  .ic-tip:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    transition-delay: 380ms;
+  }
+  .ic-tip--right::after {
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-3px);
+  }
+  .ic-tip--right:hover::after {
+    transform: translateY(-50%) translateX(0);
+  }
+  .ic-tip--left::after {
+    left: auto;
+    right: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%) translateX(3px);
+  }
+  .ic-tip--left:hover::after {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* --- scroll area with mask --- */
+  .ic-scroll {
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  /* --- kbd --- */
+  .ic-kbd {
+    display: inline-flex;
+    align-items: center;
+    height: 17px;
+    min-width: 17px;
+    padding: 0 4px;
+    justify-content: center;
+    border-radius: 5px;
+    background: rgb(var(--ic-raised));
+    border: 1px solid rgb(var(--ic-line));
+    border-bottom-width: 2px;
+    font-family: theme("fontFamily.mono");
+    font-size: 10px;
+    color: rgb(var(--ic-ink-mute));
+  }
+
+  /* --- code chip --- */
+  .ic-mono {
+    font-family: theme("fontFamily.mono");
+    font-size: 11.5px;
+  }
+
+  /* --- skeleton - Улучшенный с анимацией shimmer --- */
+  .ic-skel {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--ic-raised)) 25%,
+      rgb(var(--ic-line)) 50%,
+      rgb(var(--ic-raised)) 75%
+    );
+    background-size: 200% 100%;
+    animation: ic-shimmer 1.6s linear infinite;
+    border-radius: 7px;
+  }
+}
+
+/* =============================================================
+   5. SHELL - Улучшенные компоненты оболочки
+   ============================================================= */
+@layer components {
+  /* --- activity rail - Улучшенный с анимациями --- */
+  .ic-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 52px;
+    flex: none;
+    padding: 10px 0 8px;
+    background: rgb(var(--ic-surface) / 0.75);
+    border-right: 1px solid rgb(var(--ic-line));
+    backdrop-filter: blur(18px) saturate(1.2);
+    z-index: 20;
+  }
+  .ic-rail__btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    color: rgb(var(--ic-ink-mute));
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition:
+      color var(--ic-t) var(--ic-ease-out),
+      background var(--ic-t) var(--ic-ease-out),
+      transform var(--ic-t-fast) var(--ic-ease-spring);
+    will-change: transform;
+  }
+  .ic-rail__btn:hover {
+    color: rgb(var(--ic-ink));
+    background: rgb(var(--ic-raised));
+    transform: translateX(2px);
+  }
+  .ic-rail__btn:active {
+    transform: scale(0.94);
+  }
+  .ic-rail__btn[data-on="true"] {
+    color: rgb(var(--ic-accent));
+    background: rgb(var(--ic-accent) / 0.13);
+  }
+  .ic-rail__btn[data-on="true"]::before {
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    border-radius: 0 4px 4px 0;
+    background: var(--ic-grad);
+    box-shadow: 0 0 14px rgb(var(--ic-accent) / 0.75);
+    animation: ic-glow 2s ease-in-out infinite;
+  }
+  .ic-rail__badge {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 4px;
+    display: grid;
+    place-items: center;
+    border-radius: 99px;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--ic-grad);
+    box-shadow: 0 2px 8px -2px rgb(var(--ic-accent) / 0.9);
+    animation: ic-pop 0.3s var(--ic-ease-bounce);
+  }
+
+  /* --- start screen - С анимациями появления --- */
+  .ic-start {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    place-items: center;
+    overflow: auto;
+    padding: 40px 32px;
+  }
+  .ic-start__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(620px 380px at 30% 18%, rgb(var(--ic-accent) / 0.13), transparent 62%),
+      radial-gradient(520px 340px at 74% 78%, rgb(var(--ic-violet) / 0.11), transparent 60%);
+  }
+  .ic-start__inner {
+    position: relative;
+    width: 100%;
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .ic-start__inner > * {
+    animation: ic-fade-up 0.6s var(--ic-ease-out) backwards;
+  }
+  .ic-start__inner > *:nth-child(1) { animation-delay: 0.05s; }
+  .ic-start__inner > *:nth-child(2) { animation-delay: 0.1s; }
+  .ic-start__inner > *:nth-child(3) { animation-delay: 0.15s; }
+  .ic-start__inner > *:nth-child(4) { animation-delay: 0.2s; }
+  .ic-start__inner > *:nth-child(5) { animation-delay: 0.25s; }
+  .ic-start__inner > *:nth-child(6) { animation-delay: 0.3s; }
+  .ic-start__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 26px;
+    padding: 0 12px;
+    border-radius: 99px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: rgb(var(--ic-ink-soft));
+    background: rgb(var(--ic-raised) / 0.7);
+    border: 1px solid rgb(var(--ic-line));
+    box-shadow: var(--ic-shadow-soft);
+  }
+  .ic-start__badge svg {
+    color: rgb(var(--ic-accent));
+  }
+  .ic-start__title {
+    margin: 20px 0 0;
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    color: rgb(var(--ic-ink));
+  }
+  .ic-start__lead {
+    margin: 16px 0 0;
+    max-width: 62ch;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgb(var(--ic-ink-soft));
+  }
+  .ic-start__actions {
+    margin-top: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .ic-start__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 550;
+    color: rgb(var(--ic-ink-soft));
+    background: rgb(var(--ic-raised) / 0.7);
+    border: 1px solid rgb(var(--ic-line));
+    cursor: pointer;
+    transition:
+      transform var(--ic-t-fast) var(--ic-ease-spring),
+      border-color var(--ic-t) var(--ic-ease-out),
+      color var(--ic-t) var(--ic-ease-out),
+      box-shadow var(--ic-t) var(--ic-ease-out),
+      background var(--ic-t) var(--ic-ease-out);
+    will-change: transform;
+  }
+  .ic-start__cta:hover {
+    color: rgb(var(--ic-ink));
+    border-color: rgb(var(--ic-line-strong));
+    transform: translateY(-1px);
+    box-shadow: var(--ic-shadow-soft);
+  }
+  .ic-start__cta:active {
+    transform: translateY(0) scale(0.98);
+  }
+  .ic-start__cta--primary {
+    color: #fff;
+    background: var(--ic-grad);
+    border-color: transparent;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.18) inset,
+      0 14px 34px -14px rgb(var(--ic-accent) / 0.95);
+  }
+  .ic-start__cta--primary:hover {
+    color: #fff;
+    filter: brightness(1.07);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.18) inset,
+      0 18px 40px -14px rgb(var(--ic-accent) / 1);
+  }
+  .ic-start__kbd {
+    margin-left: 4px;
+    padding: 1px 6px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    background: rgb(255 255 255 / 0.16);
+  }
+  .ic-start__grid {
+    margin-top: 40px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+    text-align: left;
+  }
+  .ic-start__card {
+    display: flex;
+    gap: 11px;
+    padding: 14px;
+    border-radius: var(--ic-r);
+    background: rgb(var(--ic-surface) / 0.66);
+    border: 1px solid rgb(var(--ic-line));
+    transition:
+      transform var(--ic-t) var(--ic-ease-out),
+      border-color var(--ic-t) var(--ic-ease-out),
+      background var(--ic-t) var(--ic-ease-out),
+      box-shadow var(--ic-t) var(--ic-ease-out);
+    will-change: transform;
+  }
+  .ic-start__card:hover {
+    transform: translateY(-2px);
+    border-color: rgb(var(--ic-accent) / 0.4);
+    background: rgb(var(--ic-raised) / 0.75);
+    box-shadow: 0 8px 24px -8px rgb(var(--ic-accent) / 0.25);
+  }
+  .ic-start__cardIcon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    color: rgb(var(--ic-accent));
+    background: rgb(var(--ic-accent) / 0.13);
+    border: 1px solid rgb(var(--ic-accent) / 0.22);
+  }
+  .ic-start__cardTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgb(var(--ic-ink));
+    letter-spacing: -0.01em;
+  }
+  .ic-start__cardText {
+    margin-top: 3px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgb(var(--ic-ink-mute));
+  }
+  .ic-start__foot {
+    margin-top: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: rgb(var(--ic-ink-mute));
+  }
+
+  /* --- chat panel - Улучшенный --- */
+  .ic-chat-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 46px;
+    padding: 0 12px;
+    border-bottom: 1px solid rgb(var(--ic-line));
+    background: rgb(var(--ic-surface) / 0.8);
+    backdrop-filter: blur(14px);
+  }
+  .ic-chat-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 16px 14px 20px;
+  }
+  .ic-msg {
+    display: flex;
+    gap: 10px;
+    padding: 2px 0;
+    animation: ic-fade-up 0.3s var(--ic-ease-out);
+  }
+  .ic-msg__avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    font-size: 11px;
+  }
+  .ic-msg__who {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: rgb(var(--ic-ink));
+  }
+  .ic-msg__meta {
+    font-size: 10.5px;
+    color: rgb(var(--ic-ink-mute));
+  }
+
+  /* --- tool card - Улучшенный --- */
+  .ic-tool {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 10px;
+    font-size: 11.5px;
+    border: 1px solid rgb(var(--ic-line));
+    background: rgb(var(--ic-raised) / 0.45);
+    transition:
+      border-color var(--ic-t) var(--ic-ease-out),
+      background var(--ic-t) var(--ic-ease-out),
+      transform var(--ic-t-fast) var(--ic-ease-spring);
+  }
+  .ic-tool:hover {
+    border-color: rgb(var(--ic-line-strong));
+    background: rgb(var(--ic-raised) / 0.8);
+    transform: translateX(2px);
+  }
+  .ic-tool__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+  }
+  .ic-tool__name {
+    flex: none;
+    font-weight: 550;
+    color: rgb(var(--ic-ink-soft));
+  }
+  .ic-tool__args {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: theme("fontFamily.mono");
+    font-size: 11px;
+    color: rgb(var(--ic-ink-mute));
+  }
+
+  /* --- composer - Улучшенный --- */
+  .ic-composer {
+    position: relative;
+    border-radius: 16px;
+    border: 1px solid rgb(var(--ic-line));
+    background: rgb(var(--ic-sunken) / 0.9);
+    transition:
+      border-color var(--ic-t) var(--ic-ease-out),
+      box-shadow var(--ic-t) var(--ic-ease-out);
+  }
+  .ic-composer:focus-within {
+    border-color: rgb(var(--ic-accent) / 0.5);
+    box-shadow: 0 0 0 3px rgb(var(--ic-accent) / 0.1);
+  }
+}
+
+/* =============================================================
+   6. RESPONSIVE - Адаптивность
+   ============================================================= */
+@media (max-width: 768px) {
+  .ic-start {
+    padding: 24px 16px;
+  }
+  .ic-start__grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .ic-start__actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+  .ic-start__cta {
+    width: 100%;
+    justify-content: center;
+  }
+  .ic-start__title {
+    font-size: clamp(24px, 6vw, 32px);
+  }
+  .ic-rail {
+    width: 44px;
+  }
+  .ic-rail__btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ic-start__lead {
+    font-size: 13px;
+  }
+  .ic-start__badge {
+    font-size: 10px;
+    height: 22px;
+  }
+}
+
+/* =============================================================
+   7. UTILITIES - Утилиты
+   ============================================================= */
+@layer utilities {
+  .ic-grad-text {
+    background: var(--ic-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .ic-glow {
+    box-shadow: var(--ic-shadow-glow);
+  }
+  .ic-animate-fade-up {
+    animation: ic-fade-up 0.4s var(--ic-ease-out);
+  }
+  .ic-animate-scale-in {
+    animation: ic-scale-in 0.3s var(--ic-ease-out);
+  }
+  .ic-animate-slide-right {
+    animation: ic-slide-right 0.3s var(--ic-ease-out);
+  }
+}
