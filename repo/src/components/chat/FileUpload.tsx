@@ -5,7 +5,7 @@
  */
 
 import { useState, useCallback, useRef } from "react";
-import { Icon } from "../icons";
+import { Icon } from "../../icons";
 import { cn } from "../../lib/utils";
 
 export interface UploadedFile {
@@ -266,9 +266,7 @@ ${f.content}
         }
         return `--- Файл: ${f.name} (бинарный, ${formatSize(f.size)}) ---`;
       })
-      .join("
-
-");
+      .join("\n\n");
   }, [files]);
 
   return {
