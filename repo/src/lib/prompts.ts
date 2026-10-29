@@ -10,7 +10,41 @@
 import type { AgentProfile } from "../types";
 import { EFFORT_PRESETS } from "./settings";
 
-export function systemPrompt(settings: {
+/**
+ * Совместимость: раньше экспортировалось как `systemPrompt`,
+ * рантайм (src/lib/engine.ts) импортирует `buildSystemPrompt`.
+ */
+export function buildSystemPrompt(ctx: {
+  settings: { mode: "agent" | "swarm"; effort?: string };
+  profile?: AgentProfile;
+  root?: string | null;
+  openFile?: { path: string; content?: string } | null;
+  memory?: Array<{ key: string; description: string }> | null;
+  extra?: string | string[] | null;
+}): string {
+  const settings = {
+    mode: ctx.settings.mode,
+    effort: ctx.profile?.effort ?? ctx.settings.effort ?? "medium",
+    agent: ctx.profile,
+    root: ctx.root ?? undefined
+  };
+  const extras = [
+    ctx.openFile ? `ОТКРЫТЫЙ ФАЙЛ: ${ctx.openFile.path}` : "",
+    ctx.memory && ctx.memory.length
+      ? `ПАМЯТЬ ПРОЕКТА:\n${ctx.memory.map(m => `- ${m.key}: ${m.description}`).join("\n")}`
+      : "",
+    Array.isArray(ctx.extra) ? ctx.extra.filter(Boolean).join("\n\n") : (ctx.extra ?? "")
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  return baseSystemPrompt(settings) + (extras ? `\n\n${extras}` : "");
+}
+
+/** Старое имя — оставляем как алиас для совместимости. */
+export const systemPrompt = buildSystemPrompt;
+
+function baseSystemPrompt(settings: {
   mode: "agent" | "swarm";
   effort: string;
   agent?: AgentProfile;
@@ -125,3 +159,49 @@ ${content.slice(0, 5000)}
 3. Потенциальные проблемы
 4. Рекомендации по улучшению`;
 }
+
+/* ------------------------------------------------------------------ *
+ * Константные системные промпты для внутреннего рантайма (engine.ts)
+ * ------------------------------------------------------------------ */
+
+/** Архитектор: построение плана выполнения задачи. */
+export const PLANNER_PROMPT = `Ты — архитектор InfinityCoder. Составь пошаговый план выполнения задачи в реальном проекте.
+
+Ответь СТРОГО JSON без пояснений:
+{"steps": ["шаг 1", "шаг 2", ...]}
+
+Правила:
+- Не более 8 шагов, каждый — конкретное действие (прочитать/создать/изменить/проверить)
+- Сначала чтение и анализ, затем правки, в конце — проверка (тесты/сборка)
+- Учитывай память проекта, если она передана`;
+
+/** Декомпозиция задачи на независимые подзадачи для роя. */
+export const DECOMPOSE_PROMPT = `Ты — координатор роя InfinityCoder. Разбей задачу на независимые подзадачи для параллельной работы воркеров.
+
+Ответь СТРОГО JSON без пояснений:
+{"tasks": ["подзадача 1", "подзадача 2", ...]}
+
+Правила:
+- Ровно столько подзадач, сколько запрошено пользователем в сообщении
+- Подзадачи не должны пересекаться по файлам
+- Каждая подзадача формулируется как законченное действие с указанием файлов/области`;
+
+/** Сведение отчётов воркеров роя в единый ответ. */
+export const SYNTHESIZE_PROMPT = `Ты — ведущий InfinityCoder. Воркеры выполнили подзадачи параллельно. Объедини их отчёты в единый связный ответ пользователю.
+
+Структура ответа:
+1. Что было сделано (кратко)
+2. Какие файлы изменены (списком)
+3. Детали по каждой подзадаче
+4. Рекомендации по следующим шагам
+
+Не выдумывай то, чего нет в отчётах воркеров. Если воркер упал — честно укажи это.`;
+
+/** Проверка результата работы агента. */
+export const VERIFY_PROMPT = `Ты — инспектор качества InfinityCoder. Проверь, действительно ли отчёт агента решает исходную задачу.
+
+Ответь одной строкой: PASS или FAIL с кратким обоснованием после двоеточия.
+FAIL ставь только если задача явно не выполнена или отчёт противоречив.`;
+
+/** Сжатие длинной истории диалога. */
+export const COMPACT_PROMPT = `Ты сжимаешь историю диалога ИИ-ассистента и проекта. Сохрани: ключевые решения, имена файлов, важные факты, незавершённые задачи. Убери: светскую беседу, дубли, детали, потерявшие значение. Формат — сжатый список фактов.`;
