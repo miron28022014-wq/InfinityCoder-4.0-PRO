@@ -114,13 +114,10 @@ if ($SkipRuntime) {
   } else {
     Warn "Файл llama-server повреждён, скачиваю заново"
     Remove-Item $ServerExe -Force
-    $ServerExe = $null
   }
 }
 
-if ($ServerExe -and -not (Test-Path $ServerExe)) { $ServerExe = $null }
-
-if (-not $ServerExe -and -not $SkipRuntime) {
+if (-not $SkipRuntime -and -not (Test-Path $ServerExe)) {
   Step "Загрузка Vulkan-рантайма llama.cpp"
   New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
   $zip = Join-Path $env:TEMP "llama-vulkan.zip"
