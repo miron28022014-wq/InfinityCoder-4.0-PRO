@@ -51,7 +51,7 @@ jobs:
       - name: Build complete Windows installer with Vulkan runtime
         shell: pwsh
         run: |
-          & .\scripts\build-installer.ps1
+          & .\scripts\build-installer.ps1 -SkipInstall
           if ($LASTEXITCODE -ne 0) { throw "build-installer.ps1 failed with exit code $LASTEXITCODE" }
 
           $runtime = Get-Item ".\src-tauri\bin\llama-server-vulkan.exe" -ErrorAction Stop
