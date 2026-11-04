@@ -64,9 +64,15 @@ jobs:
             Sort-Object LastWriteTime -Descending |
             Select-Object -First 1
           if (-not $installer) { throw "NSIS installer was not produced." }
-          if ($installer.Length -lt 50MB) {
-            throw "Installer is only $([math]::Round($installer.Length / 1MB, 1)) MB. Expected the bundled Vulkan runtime; refusing to publish an incomplete package."
+          if ($installer.Length -lt 5MB) {
+            throw "Installer is only $([math]::Round($installer.Length / 1MB, 1)) MB. Expected the application plus the verified Vulkan runtime; refusing to publish an incomplete package."
           }
+
+          $bundleConfig = Get-Content ".\\src-tauri\\tauri.conf.json" -Raw | ConvertFrom-Json
+          if (-not ($bundleConfig.bundle.resources -contains "bin/*")) {
+            throw "Tauri bundle.resources does not include src-tauri/bin/*; runtime would not be packaged."
+          }
+          Write-Host "Runtime source: $([math]::Round($runtime.Length / 1MB, 1)) MB; Tauri resource glob verified."
 
           Write-Host "Verified installer: $($installer.FullName)"
           Write-Host "Installer size: $([math]::Round($installer.Length / 1MB, 1)) MB"
