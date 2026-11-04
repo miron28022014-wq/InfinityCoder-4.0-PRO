@@ -45,6 +45,9 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm ci
 
+      - name: Restore Rollup Windows native optional dependency
+        run: npm install --no-save --package-lock=false --include=optional @rollup/rollup-win32-x64-msvc@4.64.0
+
       - name: Run tests
         run: npm test
 
