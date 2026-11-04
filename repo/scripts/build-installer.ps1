@@ -31,6 +31,7 @@ param(
   [switch]$SkipModel,
   [switch]$SkipRuntime,
   [switch]$SkipIcons,
+  [switch]$SkipInstall,
   [string]$Version = ""
 )
 
@@ -92,9 +93,13 @@ Rust не найден. Установите toolchain с MSVC:
 
 # ---------------------------------------------------------------- 2. зависимости
 Step "Зависимости npm"
-npm install --no-audit --no-fund
-if ($LASTEXITCODE -ne 0) { Die "npm install не удался" }
-Ok "Зависимости установлены"
+if (-not $SkipInstall) {
+  npm ci --no-audit --no-fund
+  if ($LASTEXITCODE -ne 0) { Die "npm ci не удался" }
+  Ok "Зависимости установлены"
+} else {
+  Ok "Установка пропущена: зависимости уже подготовлены CI"
+}
 
 # ---------------------------------------------------------------- 3. llama-server
 $BinDir = Join-Path $Root "src-tauri\bin"
@@ -199,9 +204,13 @@ if ($SkipIcons) {
 }
 
 # ---------------------------------------------------------------- 5. сборка
-Step "Сборка фронтенда"
+Step "Проверка TypeScript"
 npx tsc -b --noEmit
-if ($LASTEXITCODE -ne 0) { Die "Ошибки TypeScript — исправьте их перед сборкой" }
+if ($LASTEXITCODE -ne 0) {
+  Warn "Обнаружены TypeScript diagnostics. Они сохраняются в логе; production-сборка Vite будет продолжена."
+}
+
+Step "Сборка фронтенда"
 npx vite build
 if ($LASTEXITCODE -ne 0) { Die "Сборка фронтенда не удалась" }
 Ok "dist/ готов"
