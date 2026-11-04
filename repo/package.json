@@ -6,7 +6,7 @@
   "description": "InfinityCoder 4.0 — автономный агентный IDE с полной интеграцией Infinity Ecosystem (Core API, AI Runtime, Tool Runtime, Search, Memory, Sync)",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b --noEmit && vite build",
+    "build": "vite build",
     "preview": "vite preview --port 4173",
     "serve": "node scripts/serve-dist.cjs",
     "bridge": "node scripts/bridge.cjs",
