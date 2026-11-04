@@ -53,6 +53,9 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm ci
 
+      - name: Install Rollup native binary for Windows
+        run: npm install --no-save --package-lock=false --ignore-scripts @rollup/rollup-win32-x64-msvc@4.64.0
+
       - name: Type check (existing diagnostics are non-blocking)
         continue-on-error: true
         run: npm run typecheck
